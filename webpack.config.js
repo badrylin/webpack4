@@ -1,13 +1,14 @@
 const CleanWebpackPlugin = require("clean-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 const path = require("path")
 const webpack = require("webpack")
 const config = require("./webpack.config")
 
 
-module.exports = {
+module.exports = [{
     entry: {
-        app: './src/index.js'
+        index: './src/index.js'
     },
     output: {
         path: path.join(__dirname, './dist'),
@@ -18,16 +19,23 @@ module.exports = {
 
         ]
     },
-    tap: [
-        new CleanWebpackPlugin('dist'),
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: "vendor",
-        //     minChunks: Infinity
-        // }),
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: "manifast",
-        //     minChunks: Infinity
-        // })
-        // new webpack.optimize.splitChunks()
-    ]
-}
+    plugins: [
+        new CleanWebpackPlugin('./dist'),
+        new HtmlWebpackPlugin({
+            title: "Page index",
+            filename: "index.html",
+            templete: './index.html'
+        })
+    ],
+    optimization: {
+        splitChunks: {
+            name: "vendor",
+            chunks: 'initial',
+            minChunks: 1
+        },
+        runtimeChunk: {
+            name: "manifest"
+        },
+        namedModules: true
+    }
+}]
