@@ -7,25 +7,26 @@ const config = require("./webpack.config")
 
 
 module.exports = [{
-    entry: {
-        index: './src/index.js',
-    },
+    // entry: {
+    //     index: './index.js', // 4.0+默认src/
+    // },
     output: {
-        path: path.join(__dirname, './dist'),
+        // path: path.join(__dirname, './dist'), // 4.0+默认dist
         filename: "[name].[hash:7].js",
     },
     module: {
         rules:[
             {
                 test: /\.css$/,
-                loader: ['style-loader','css-loader']
+                loader: ['style-loader','css-loader'],
+            },{
+                resolve:{
+                    alias:{
+                        jquery$: path.resolve(__dirname, "./src/libs/jquery.min.js")
+                    }
+                }
             }
         ]
-    },
-    resolve: {
-        alias:{
-            jquery$: path.resolve(__dirname, "./src/libs/jquery.min.js")
-        }
     },
     plugins: [
         new CleanWebpackPlugin('./dist'),
