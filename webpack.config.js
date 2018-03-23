@@ -12,8 +12,11 @@ module.exports = [{
     // },
     output: {
         // path: path.join(__dirname, './dist'), // 4.0+默认dist
-        filename: "[name].[hash:7].js",
+        filename: "[name].[chunkhash:7].js",
+        publicPath: './',
+        chunkFilename: "[name].[chunkhash:7].js",
     },
+    devtool: 'eval-source-map',
     module: {
         rules:[
             {
@@ -37,18 +40,35 @@ module.exports = [{
         }),
         new webpack.ProvidePlugin({
             $: 'jquery'
-        })
+        }),
     ],
     optimization: {
         splitChunks: {
-            chunks: 'initial',
             maxInitialRequests: 3,
             maxAsyncRequests: 5,
             minChunks: 1,
-            minSize: 10,
-            name: "vendors",
             cacheGroups: {
-                test: /([\\/]node_modules[\\/]|[\\/]src[\\/]libs[\\/])/,
+                default: {
+                    minChunks: 2,
+                    minSize: 1,
+                    chunks: 'async',
+                    priority: -20,
+                    reuseExistingChunk: true,
+                },
+                vendors: {
+                    chunks: 'initial',
+                    name: 'vendors',
+                    minSize: 1,
+                    test: /([\\/]node_modules[\\/])/,
+                    priority: -10,
+                },
+                jquery: {
+                    chunks: 'all',
+                    name: 'jquery',
+                    test: /([\\/]src[\\/]libs[\\/])/,
+                    priority: -5,
+                    reuseExistingChunk: true,
+                },
             }
         },
         runtimeChunk: {
